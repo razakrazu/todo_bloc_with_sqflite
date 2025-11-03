@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_bloc/todo/popup_screen.dart';
+import 'package:todo_bloc/todo/show_details.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -51,8 +52,12 @@ class HomeScreen extends StatelessWidget {
                     ),
                     trailing: IconButton(
                       onPressed: () {
-                   
-                      },
+                  //  Navigator.of(context).push(MaterialPageRoute(builder:(context) => UserDetails(),));
+   showDialog(context: context, builder: (context) {
+                         return AlertDialog(content:UserDetails());
+                       },);
+},
+
                       icon: Icon(Icons.delete),
                     ),
                   ),
