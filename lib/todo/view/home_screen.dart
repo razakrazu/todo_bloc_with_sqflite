@@ -33,7 +33,7 @@ class HomeScreen extends StatelessWidget {
                 height: 80,
                 width: 350,
                 child: Card(
-                  color: const Color.fromARGB(255, 138, 189, 189),
+                  color: const Color.fromARGB(255, 171, 231, 231),
                   elevation: 5,
                   child: ListTile(
                     title: Text(
