@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:todo_bloc/todo/model/model.dart';
+import 'package:todo_bloc/todo/view/upadat_screen.dart';
 
 class UserDetails extends StatelessWidget {
-  const UserDetails({super.key});
+  final Future<Database> database;
+  final TodoModel todomodels;
+  const UserDetails({
+    super.key,
+    required this.database,
+    required this.todomodels,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -34,22 +43,34 @@ class UserDetails extends StatelessWidget {
                 ),
               ),
 
-              IconButton(onPressed: () {}, icon: Icon(Icons.edit)),
+              IconButton(onPressed: () {
+                     showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        content: EditPopupScreen(
+                          database: database,
+                          todo: todomodels, // എഡിറ്റ് ചെയ്യാനുള്ള ഡാറ്റ പാസ്സ് ചെയ്യുന്നു
+                        ),
+                      );
+                    },
+                  );
+              }, icon: Icon(Icons.edit)),
             ],
           ),
           SizedBox(height: 23),
           Text(
-            'Name: Gogul',
+            'Name: ${todomodels.name}',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
           ),
           SizedBox(height: 23),
           Text(
-            'Place: Malappuram',
+            'Place: ${todomodels.place}',
             style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
           ),
           SizedBox(height: 20),
           Text(
-            'Description: i am boy my name is razak. I will find my job  i will achive my dream job then I will shine all person at any time in my life ',
+            'Description: ${todomodels.description}',
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w500,

@@ -3,28 +3,19 @@ part of 'todobloc_bloc.dart';
 @immutable
 sealed class TodoblocEvent {}
 
+class LoadTodo extends TodoblocEvent {}
 
-class LoadTodo extends TodoblocEvent{}
-
-
-class addTodo extends TodoblocEvent{
-
-  final TodoModel  todomodel;
- addTodo(this.todomodel);
-
-
+class AddTodo extends TodoblocEvent {
+  final TodoModel todomodel;
+  AddTodo(this.todomodel);
 }
 
-
-
-class updateTodo extends TodoblocEvent{
-   final TodoModel todomodel;
-   updateTodo(this.todomodel);
-
+class UpdateTodo extends TodoblocEvent {
+  final TodoModel todomodel;
+  UpdateTodo(this.todomodel);
 }
 
-
-class deleteTodo extends TodoblocEvent{
+class DeleteTodo extends TodoblocEvent {
   final int id;
-  deleteTodo(this.id);
+  DeleteTodo(this.id);
 }

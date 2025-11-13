@@ -1,15 +1,13 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:todo_bloc/todo/bloc/todobloc_bloc.dart';
 import 'package:todo_bloc/todo/model/model.dart';
 
-class AddPopupScreen extends StatelessWidget {
+class EditPopupScreen extends StatelessWidget {
   final Future<Database> database;
-  
-  AddPopupScreen({super.key, required this.database, });
+  final TodoModel todo;
+  EditPopupScreen({super.key, required this.database, required this.todo});
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController placeController = TextEditingController();
@@ -17,19 +15,23 @@ class AddPopupScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final todobloc = BlocProvider.of<TodoblocBloc>(context);
-    return Container(
+    // നിലവിലുള്ള ഡാറ്റ ടെക്സ്റ്റ്ഫീൽഡുകളിൽ നിറയ്ക്കുക
+    nameController.text = todo.name;
+    placeController.text = todo.place;
+    descriptionController.text = todo.description;
+
+    return SizedBox(
       height: 400,
       width: 400,
       child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text(
-              'ADD DETAILS',
+            const Text(
+              'EDIT DETAILS',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
             ),
-            SizedBox(height: 50),
+            const SizedBox(height: 50),
             TextFormField(
               controller: nameController,
               decoration: InputDecoration(
@@ -39,8 +41,7 @@ class AddPopupScreen extends StatelessWidget {
                 hintText: 'Name',
               ),
             ),
-
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextFormField(
               controller: placeController,
               decoration: InputDecoration(
@@ -50,30 +51,30 @@ class AddPopupScreen extends StatelessWidget {
                 hintText: 'Place',
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextFormField(
               controller: descriptionController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25),
                 ),
-                hintText: 'Discription',
+                hintText: 'Description',
               ),
             ),
-            SizedBox(height: 40),
-
+            const SizedBox(height: 40),
             ElevatedButton(
               onPressed: () {
-                TodoModel todomodel = TodoModel(
+                TodoModel updatedTodo = TodoModel(
+                  id: todo.id, // ID മാറ്റരുത്
                   name: nameController.text,
                   place: placeController.text,
                   description: descriptionController.text,
                 );
-                 context.read<TodoblocBloc>().add(AddTodo(todomodel));
-                // log('$todomodel');
-                Navigator.pop(context);
+                context.read<TodoblocBloc>().add(UpdateTodo(updatedTodo));
+                Navigator.pop(context); // Edit Popup അടയ്ക്കുക
+                Navigator.pop(context); // UserDetails Popup അടയ്ക്കുക
               },
-              child: Text('ADD'),
+              child: const Text('UPDATE'),
             ),
           ],
         ),

@@ -1,4 +1,4 @@
-import 'dart:ffi';
+
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
@@ -10,60 +10,70 @@ part 'todobloc_state.dart';
 
 class TodoblocBloc extends Bloc<TodoblocEvent, TodoblocState> {
   final Future<Database> database;
-  final bool dbExists;
-  TodoblocBloc(this.database, this.dbExists) : super(TodoblocInitial()) {
-    on<addTodo>((event, emit) async {
+
+  TodoblocBloc(this.database) : super(TodoblocInitial()) {
+    on<LoadTodo>((event, emit) async {
       emit(TodoLoading());
 
       try {
-        if (!dbExists) {
-          emit(TodoError(errormsg: 'Database not exists'));
-        }
-
-        await insertTodo(event.todomodel);
         final List<TodoModel> todolist = await fetchTodos();
-
         emit(TodoLoaded(todolist));
       } catch (e) {
-        emit(TodoError(errormsg: e.toString()));
+        emit(TodoError(errormsg: 'faild to load ${e.toString()}'));
       }
-
-
-
     });
-    
 
-    on<LoadTodo>((event,emit) async{
-
-  emit(TodoLoading());
-
-  try {
-    if (!dbExists) {
-          emit(TodoError(errormsg: 'Database not exists'));
-
-             final List<TodoModel> todolist = await fetchTodos();
-            emit(TodoLoaded(todolist));
-        }
- }catch(e) {
-        emit(TodoError(errormsg: e.toString()));
+    // Add Todo Event
+    on<AddTodo>((event, emit) async {
+      emit(TodoLoading());
+      try {
+        await insertTodo(event.todomodel);
+        final List<TodoModel> todolist = await fetchTodos();
+        emit(TodoLoaded(todolist));
+      } catch (e) {
+        emit(TodoError(errormsg: 'Failed to add todo: ${e.toString()}'));
       }
-});
+    });
+    // Update Todo Event
+    on<UpdateTodo>((event, emit) async {
+      emit(TodoLoading());
+      try {
+        await updateTodo(event.todomodel);
+        final List<TodoModel> todolist = await fetchTodos();
+        emit(TodoLoaded(todolist));
+      } catch (e) {
+        emit(TodoError(errormsg: 'Failed to update todo: ${e.toString()}'));
+      }
+    });
+
+    // Delete Todo Event
+    on<DeleteTodo>((event, emit) async {
+      emit(TodoLoading());
+      try {
+        await deleteTodo(event.id);
+        final List<TodoModel> todolist = await fetchTodos();
+        emit(TodoLoaded(todolist));
+      } catch (e) {
+        emit(TodoError(errormsg: 'Failed to delete todo: ${e.toString()}'));
+      }
+    });
   }
 
 
 
-  
+
   Future<List<TodoModel>> fetchTodos() async {
     final Database db = await database;
 
     final List<Map<String, dynamic>> maps = await db.query('todo');
     return List.generate(maps.length, (index) {
-      print(maps[index]);
+
       return TodoModel.fromMap(maps[index]);
     });
   }
 
   Future<void> insertTodo(TodoModel todomodel) async {
+    //  log('${todomodel.toMap()}');
     final Database db = await database;
     await db.insert(
       'todo',

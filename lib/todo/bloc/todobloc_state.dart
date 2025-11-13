@@ -12,6 +12,7 @@ class TodoLoading extends TodoblocState{}
 
 class TodoLoaded extends TodoblocState{
   final List<TodoModel> todolist;
+      
   TodoLoaded(this.todolist);
 }
 

@@ -16,29 +16,27 @@ void main() async {
     },
     version: 1,
   );
-  bool dbExists = await databaseExists(
-    join(await getDatabasesPath(), 'todo_database'),
-  );
-  runApp(MyApp(database: database, dbExists: dbExists));
+
+  runApp(MyApp(database: database,  ));
 }
 
 class MyApp extends StatelessWidget {
   final Future<Database> database;
-  final bool dbExists;
-  MyApp({super.key, required this.database, required this.dbExists});
+
+  MyApp({super.key, required this.database, });
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => TodoblocBloc(database,dbExists),
+      create: (context) => TodoblocBloc(database)..add(LoadTodo()),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         ),
-        home: HomeScreen(database: database,dbExists: dbExists,),
+        home: HomeScreen(database: database, ),
       ),
     );
   }
